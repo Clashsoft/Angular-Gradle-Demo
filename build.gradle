@@ -1,18 +1,18 @@
 plugins {
-    id 'java'
-    id 'application'
+	id 'java'
+	id 'application'
 }
 
 repositories {
-    jcenter()
+	jcenter()
 }
 
 dependencies {
-    implementation 'com.google.guava:guava:28.1-jre'
+	implementation 'com.google.guava:guava:28.1-jre'
 
-    testImplementation 'junit:junit:4.12'
+	testImplementation 'junit:junit:4.12'
 }
 
 application {
-    mainClassName = 'de.clashsoft.demo.angulargradle.App'
+	mainClassName = 'de.clashsoft.demo.angulargradle.App'
 }
