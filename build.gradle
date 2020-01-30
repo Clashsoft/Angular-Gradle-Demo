@@ -16,3 +16,79 @@ dependencies {
 application {
 	mainClassName = 'de.clashsoft.demo.angulargradle.App'
 }
+
+// --------------- Angular ---------------
+
+// adapted from https://blog.softwareforen.de/2018/10/integration-von-spring-und-angular-mit-gradle/
+
+// User Configuration
+
+def appDir = "$projectDir/angular/angular-gradle-demo"
+def distDir = "$appDir/dist/angular-gradle-demo"
+
+def packageManager = guessPackageManager()
+def packageManagerArgs = [ 'install', '--shamefully-hoist' ]
+
+// Gradle Glue Code
+
+sourceSets.main.resources.srcDir distDir
+
+processResources.dependsOn 'buildAngular'
+
+static def isWindows() {
+	return System.getProperty('os.name').toUpperCase().contains('WINDOWS')
+}
+
+static def guessPackageManager() {
+	return readPackageManagerFromNgConfig() + (isWindows() ? '.cmd' : '')
+}
+
+static def readPackageManagerFromNgConfig() {
+	def process = 'ng config cli.packageManager'.execute()
+	def local = process.text
+	if (process.exitValue() == 0) {
+		return local.trim()
+	}
+	return 'ng config -g cli.packageManager'.execute().text.trim()
+}
+
+tasks.register('buildAngular', Exec) {
+	it.group = BasePlugin.BUILD_GROUP
+	it.dependsOn 'installAngularDependencies'
+
+	it.workingDir = appDir
+	it.inputs.dir appDir
+	it.outputs.dir "$appDir/dist"
+
+	if (isWindows()) {
+		it.commandLine 'ng.cmd', 'build'
+	}
+	else {
+		it.commandLine 'ng', 'build'
+	}
+}
+
+tasks.register('installAngularDependencies', Exec) {
+	it.group = BasePlugin.BUILD_GROUP
+
+	it.workingDir = appDir
+
+	def modulesDir = "$appDir/node_modules"
+	def files = [
+			"$appDir/package.json",
+			// lock files:
+			"$appDir/package-lock.json",
+			"$appDir/yarn.lock",
+			"$appDir/pnpm-lock.yaml",
+	]
+
+	mkdir(modulesDir)
+
+	it.inputs.files(files)
+	it.inputs.dir(modulesDir)
+	it.outputs.files(files)
+	it.outputs.dir(modulesDir)
+
+	it.commandLine packageManager
+	it.commandLine packageManagerArgs
+}
