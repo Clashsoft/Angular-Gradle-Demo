@@ -29,6 +29,8 @@ application {
 def appDir = "$projectDir/angular/angular-gradle-demo"
 def outputDir = "$appDir/dist/angular-gradle-demo"
 
+def buildArgs = [ /* '--aot', '--prod', ... */ ]
+
 def packageManager = guessPackageManager()
 def packageManagerArgs = [ 'install', '--shamefully-hoist' ]
 
@@ -55,6 +57,10 @@ static def readPackageManagerFromNgConfig() {
 	return 'ng config -g cli.packageManager'.execute().text.trim()
 }
 
+static String mkCmd(String executable) {
+	return isWindows() ? executable + '.cmd' : executable
+}
+
 tasks.register('buildAngular', Exec) {
 	it.group = BasePlugin.BUILD_GROUP
 	it.dependsOn 'installAngularDependencies'
@@ -63,12 +69,7 @@ tasks.register('buildAngular', Exec) {
 	it.inputs.files(fileTree(appDir).exclude('dist', 'node_modules'))
 	it.outputs.dir "$appDir/dist"
 
-	if (isWindows()) {
-		it.commandLine 'ng.cmd', 'build'
-	}
-	else {
-		it.commandLine 'ng', 'build'
-	}
+	it.commandLine(mkCmd('ng'), 'build', *buildArgs)
 }
 
 tasks.register('installAngularDependencies', Exec) {
