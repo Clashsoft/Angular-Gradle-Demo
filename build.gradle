@@ -76,21 +76,11 @@ tasks.register('installAngularDependencies', Exec) {
 
 	it.workingDir = appDir
 
-	def modulesDir = "$appDir/node_modules"
-	def files = [
-			"$appDir/package.json",
-			// lock files:
-			"$appDir/package-lock.json",
-			"$appDir/yarn.lock",
-			"$appDir/pnpm-lock.yaml",
-	]
-
-	mkdir(modulesDir)
-
-	it.inputs.files(files)
-	it.inputs.dir(modulesDir)
-	it.outputs.files(files)
-	it.outputs.dir(modulesDir)
+	// up-to-date checks cause problems because node_modules is so huge :(
+	// just hope the package manager figures out when it does not need to do anything
+	// it.inputs.file "$appDir/package.json"
+	// it.outputs.files "$appDir/package-lock.json", "$appDir/yarn.lock", "$appDir/pnpm-lock.yaml" // lock files
+	// it.outputs.dir "$appDir/node_modules"
 
 	it.commandLine(packageManager, *packageManagerArgs)
 }
