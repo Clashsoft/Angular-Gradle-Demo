@@ -38,7 +38,14 @@ def packageManagerArgs = [ 'install', '--shamefully-hoist' ]
 
 sourceSets.main.resources.srcDir outputDir
 
-processResources.dependsOn 'buildAngular'
+tasks.named('processResources') {
+	if (project.hasProperty('angular-dev')) {
+		it.dependsOn 'cleanAngular'
+	}
+	else {
+		it.dependsOn 'buildAngular'
+	}
+}
 
 tasks.named('clean') { it.dependsOn 'cleanAngular' }
 
