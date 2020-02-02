@@ -40,6 +40,8 @@ sourceSets.main.resources.srcDir outputDir
 
 processResources.dependsOn 'buildAngular'
 
+tasks.named('clean') { it.dependsOn 'cleanAngular' }
+
 static boolean isWindows() {
 	return System.getProperty('os.name').toUpperCase().contains('WINDOWS')
 }
@@ -86,4 +88,8 @@ tasks.register('installAngularDependencies', Exec) {
 	// it.outputs.dir "$appDir/node_modules"
 
 	it.commandLine(packageManager, *packageManagerArgs)
+}
+
+tasks.register('cleanAngular', Delete) {
+	it.delete "$appDir/dist"
 }
