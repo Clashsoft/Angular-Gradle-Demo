@@ -40,21 +40,22 @@ sourceSets.main.resources.srcDir outputDir
 
 processResources.dependsOn 'buildAngular'
 
-static def isWindows() {
+static boolean isWindows() {
 	return System.getProperty('os.name').toUpperCase().contains('WINDOWS')
 }
 
-static def guessPackageManager() {
-	return readPackageManagerFromNgConfig() + (isWindows() ? '.cmd' : '')
+static String guessPackageManager() {
+	return mkCmd(readNgConfigPackageManager())
 }
 
-static def readPackageManagerFromNgConfig() {
-	def process = 'ng config cli.packageManager'.execute()
+static String readNgConfigPackageManager() {
+	def cmd = mkCmd('ng')
+	def process = (cmd + ' config cli.packageManager').execute()
 	def local = process.text
 	if (process.exitValue() == 0) {
 		return local.trim()
 	}
-	return 'ng config -g cli.packageManager'.execute().text.trim()
+	return (cmd + ' config -g cli.packageManager').execute().text.trim()
 }
 
 static String mkCmd(String executable) {
