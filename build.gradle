@@ -52,6 +52,7 @@ static String readNgConfigPackageManager() {
 	def cmd = mkCmd('ng')
 	def process = (cmd + ' config cli.packageManager').execute()
 	def local = process.text
+	process.waitFor()
 	if (process.exitValue() == 0) {
 		return local.trim()
 	}
