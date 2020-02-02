@@ -60,7 +60,7 @@ tasks.register('buildAngular', Exec) {
 	it.dependsOn 'installAngularDependencies'
 
 	it.workingDir = appDir
-	it.inputs.dir appDir
+	it.inputs.files(fileTree(appDir).exclude('dist', 'node_modules'))
 	it.outputs.dir "$appDir/dist"
 
 	if (isWindows()) {
