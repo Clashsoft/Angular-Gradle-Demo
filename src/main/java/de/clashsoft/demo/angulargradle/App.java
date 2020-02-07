@@ -11,6 +11,8 @@ public class App
 
 		service.staticFileLocation("/");
 
+		service.get("/hello", (req, res) -> "Hello from Spark Server");
+
 		service.init();
 	}
 }
