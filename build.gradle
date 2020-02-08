@@ -85,6 +85,10 @@ tasks.register('buildAngular', Exec) {
 	it.outputs.dir "$appDir/dist"
 
 	it.commandLine(mkCmd('ng'), 'build', *buildArgs)
+
+	it.doFirst {
+		println it.commandLine.join(' ')
+	}
 }
 
 tasks.register('installAngularDependencies', Exec) {
@@ -99,6 +103,10 @@ tasks.register('installAngularDependencies', Exec) {
 	// it.outputs.dir "$appDir/node_modules"
 
 	it.commandLine(packageManager, *packageManagerArgs)
+
+	it.doFirst {
+		println it.commandLine.join(' ')
+	}
 }
 
 tasks.register('cleanAngular', Delete) {
