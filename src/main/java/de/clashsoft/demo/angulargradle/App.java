@@ -12,6 +12,8 @@ public class App
 
 		service.get("/hello", (req, res) -> "Hello from Spark Server");
 
+		service.post("/ping", (req, res) -> "PONG from Spark Server: " + req.body());
+
 		service.before((request, response) -> {
 			response.header("Access-Control-Allow-Origin", "http://localhost:4200");
 		});

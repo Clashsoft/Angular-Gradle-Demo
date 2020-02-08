@@ -10,7 +10,8 @@ import {environment} from "../environments/environment";
 })
 export class AppComponent implements OnInit {
   title = 'angular-gradle-demo';
-  sparkMessage = 'fetching spark message...';
+  sparkHello = 'fetching spark message...';
+  sparkPing = 'POSTing ping to spark...';
 
   constructor(
     private http: HttpClient,
@@ -19,6 +20,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.http.get(environment.apiURL + '/hello', {responseType: 'text'})
-      .subscribe(message => this.sparkMessage = message);
+      .subscribe(response => this.sparkHello = response);
+
+    this.http.post(environment.apiURL + '/ping', 'test', {responseType: 'text'})
+      .subscribe(response => this.sparkPing = response);
   }
 }
