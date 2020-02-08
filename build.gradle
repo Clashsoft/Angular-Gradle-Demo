@@ -36,14 +36,18 @@ def packageManagerArgs = [ 'install', '--shamefully-hoist' ]
 
 // Gradle Glue Code
 
-sourceSets.main.resources.srcDir outputDir
+// -Pno-angular: don't include Angular build (for running separately)
+// -Pangular-dev: build frontend in dev mode and serve via backend
+// (default): build frontend in in prod mode and serve via backend
 
-tasks.named('processResources') {
+if (!project.hasProperty('no-angular')) {
+	sourceSets.main.resources.srcDir(files(outputDir).builtBy('buildAngular'))
+
 	if (project.hasProperty('angular-dev')) {
-		it.dependsOn 'cleanAngular'
+		buildArgs += '--configuration=gradle'
 	}
 	else {
-		it.dependsOn 'buildAngular'
+		buildArgs += '--prod'
 	}
 }
 
