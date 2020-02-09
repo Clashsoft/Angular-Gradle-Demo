@@ -58,18 +58,9 @@ export const environment = {
 
 ### 5. Add "gradle" configuration to Angular config
 
-In `angular.json`, add:
+In `angular.json`, add under `projects/angular-gradle-demo/architect/build/configurations`:
 
-```json5
-{
-  // ...
-  "projects": {
-    "angular-gradle-demo": {
-      // ...
-      "architect": {
-        "build": {
-          // ...
-          "configurations": {
+```json
             "gradle": {
               "fileReplacements": [
                 {
@@ -78,7 +69,4 @@ In `angular.json`, add:
                 }
               ]
             },
-            "production": {
-              // ...
-}}}}}}}
 ```
