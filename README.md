@@ -146,3 +146,22 @@ class Main {
     }
 }
 ```
+
+## Running
+
+> ⓘ IntelliJ users can check out the [premade run configurations](.idea/runConfigurations).
+
+### Serving Frontend via Backend
+
+To build the frontend and serve it via the backend, just run your main class manually.
+E.g., if you are using the `application` Gradle plugin, run `gradle run`.
+
+This will build Angular in production mode, so the build may take a while and it will be hard to debug.
+To build Angular in dev mode, use `gradle run -Pangular-dev`.
+Even in dev mode, Angular may take a while to build.
+
+### Serving Frontend and Backend separately
+
+To run the backend without the frontend, run `gradle run -Pno-angular`.
+Now you can run just the frontend with `ng serve`. 
+This allows you to debug Angular as usual and is also quite fast.
