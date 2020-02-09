@@ -1,6 +1,7 @@
 plugins {
 	id 'java'
 	id 'application'
+	id 'de.clashsoft.angular-gradle' version '0.1.3'
 }
 
 repositories {
@@ -20,95 +21,6 @@ application {
 	mainClassName = 'de.clashsoft.demo.angulargradle.App'
 }
 
-// --------------- Angular ---------------
-
-// adapted from https://blog.softwareforen.de/2018/10/integration-von-spring-und-angular-mit-gradle/
-
-// User Configuration
-
-def appDir = "$projectDir/angular/angular-gradle-demo"
-def outputDir = "$appDir/dist/angular-gradle-demo"
-
-def buildArgs = [ /* '--aot', '--prod', ... */ ]
-
-def packageManager = guessPackageManager()
-def packageManagerArgs = [ 'install', '--shamefully-hoist' ]
-
-// Gradle Glue Code
-
-// -Pno-angular: don't include Angular build (for running separately)
-// -Pangular-dev: build frontend in dev mode and serve via backend
-// (default): build frontend in in prod mode and serve via backend
-
-if (!project.hasProperty('no-angular')) {
-	sourceSets.main.resources.srcDir(files(outputDir).builtBy('buildAngular'))
-
-	if (project.hasProperty('angular-dev')) {
-		buildArgs += '--configuration=gradle'
-	}
-	else {
-		buildArgs += '--prod'
-	}
-}
-
-tasks.named('clean') { it.dependsOn 'cleanAngular' }
-
-static boolean isWindows() {
-	return System.getProperty('os.name').toUpperCase().contains('WINDOWS')
-}
-
-static String guessPackageManager() {
-	return mkCmd(readNgConfigPackageManager())
-}
-
-static String readNgConfigPackageManager() {
-	def cmd = mkCmd('ng')
-	def process = (cmd + ' config cli.packageManager').execute()
-	def local = process.text
-	process.waitFor()
-	if (process.exitValue() == 0) {
-		return local.trim()
-	}
-	return (cmd + ' config -g cli.packageManager').execute().text.trim()
-}
-
-static String mkCmd(String executable) {
-	return isWindows() ? executable + '.cmd' : executable
-}
-
-tasks.register('buildAngular', Exec) {
-	it.group = BasePlugin.BUILD_GROUP
-	it.dependsOn 'installAngularDependencies'
-
-	it.workingDir = appDir
-	it.inputs.files(fileTree(appDir).exclude('dist', 'node_modules'))
-	it.outputs.dir "$appDir/dist"
-
-	it.commandLine(mkCmd('ng'), 'build', *buildArgs)
-
-	it.doFirst {
-		println it.commandLine.join(' ')
-	}
-}
-
-tasks.register('installAngularDependencies', Exec) {
-	it.group = BasePlugin.BUILD_GROUP
-
-	it.workingDir = appDir
-
-	// up-to-date checks cause problems because node_modules is so huge :(
-	// just hope the package manager figures out when it does not need to do anything
-	// it.inputs.file "$appDir/package.json"
-	// it.outputs.files "$appDir/package-lock.json", "$appDir/yarn.lock", "$appDir/pnpm-lock.yaml" // lock files
-	// it.outputs.dir "$appDir/node_modules"
-
-	it.commandLine(packageManager, *packageManagerArgs)
-
-	it.doFirst {
-		println it.commandLine.join(' ')
-	}
-}
-
-tasks.register('cleanAngular', Delete) {
-	it.delete "$appDir/dist"
+angular {
+	appDir = 'angular/angular-gradle-demo'
 }
