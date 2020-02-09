@@ -6,6 +6,7 @@ Follow the steps below to integrate an Angular frontend into your Gradle project
 ## Guide
 
 > ⓘ In the below guide, `angular-gradle-demo` is a placeholder for your project name.
+> It also assumes your backend server runs on port 4567 during development.
 
 ### 1. Adding the plugin
 
@@ -46,17 +47,44 @@ angular {
 }
 ```
 
-### 4. Add "environment.gradle.ts"
+### 4. Add "apiURL" environment variables
+
+Add the following property to the `environment` object in `<angular-root>/src/environments/environment.ts`:
+
+```typescript
+export const environment = {
+  // ...
+  apiURL: 'localhost:4567',
+}
+```
+
+In `<angular-root>/src/environments/environment.prod.ts`, add the same property, but with an empty value:
+
+```typescript
+export const environment = {
+  // ...
+  apiURL: '',
+}
+```
+
+Make sure you prefix your API request URLs with this variable.
+If you are already using an environment variable with a similar purpose, you can also keep that.
+The name `apiURL` is only a suggestion here.
+
+### 5. Add "environment.gradle.ts"
 
 Create a new file named `environment.gradle.ts` in `<angular-root>/src/environments`, with the following content:
 
 ```typescript
 export const environment = {
   production: false,
+  apiURL: '',
 };
 ```
 
-### 5. Add "gradle" configuration to Angular config
+If you are already an environment variable to prefix API request URLs, use that variable's name instead of `apiURL` here, too.
+
+### 6. Add "gradle" configuration to Angular config
 
 In `angular.json`, add under `projects/angular-gradle-demo/architect/build/configurations`:
 
