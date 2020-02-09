@@ -98,3 +98,51 @@ In `angular.json`, add under `projects/angular-gradle-demo/architect/build/confi
               ]
             },
 ```
+
+### 7. Enable CORS in development mode on your backend server
+
+To run and test frontend and backend separately, you need to run them on two different ports.
+This was prepared with `apiURL` (or similar) already, but we also need to enable CORS so the requests are not blocked by the browser.
+
+With the [Sparkjava](http://sparkjava.com/) backend server, you can use the following code:
+
+```java
+class Main {
+    public static void main(String[] args) {
+        final Service service = Service.ignite();
+        service.port(...);
+        // if you are using Spark singleton APIs instead of Service, replace service.* calls below with Spark.* or static import
+
+        // define static files location
+        // needs to be done before enabling CORS!
+        service.staticFiles.location("/angular-gradle-demo");
+
+        final boolean devMode = ...;
+        if (devMode) {
+            // enable CORS for static files (not handled by before(...) below)
+            service.staticFiles.header("Access-Control-Allow-Origin", "*");
+            
+            // enable CORS for non-static requests
+            before((req, res) -> {
+                res.header("Access-Control-Allow-Origin", "*");
+                res.header("Access-Control-Allow-Headers", "*");
+            });
+
+            // allow CORS preflight for methods other than GET
+            options("/*", (req, res) -> {
+                String accessControlRequestHeaders = req.headers("Access-Control-Request-Headers");
+                if (accessControlRequestHeaders != null) {
+                    res.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+                }
+
+                String accessControlRequestMethod = req.headers("Access-Control-Request-Method");
+                if (accessControlRequestMethod != null) {
+                    res.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+                }
+
+                return "OK";
+            });
+        }
+    }
+}
+```
