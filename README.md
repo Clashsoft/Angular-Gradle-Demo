@@ -42,8 +42,8 @@ Usually, this is `<angular-root>/dist/<angular-project-name>`.
 
 ```groovy
 angular {
-	// ...
-	outputDir = 'angular/angular-gradle-demo/dist/angular-gradle-demo'
+    // ...
+    outputDir = 'angular/angular-gradle-demo/dist/angular-gradle-demo'
 }
 ```
 
@@ -121,7 +121,7 @@ class Main {
         if (devMode) {
             // enable CORS for static files (not handled by before(...) below)
             service.staticFiles.header("Access-Control-Allow-Origin", "*");
-            
+
             // enable CORS for non-static requests
             before((req, res) -> {
                 res.header("Access-Control-Allow-Origin", "*");
