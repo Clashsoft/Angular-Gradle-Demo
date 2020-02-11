@@ -1,5 +1,7 @@
 # Angular Gradle Plugin - Demo Project
 
+[![Build Status](https://travis-ci.org/Clashsoft/Angular-Gradle-Demo.svg?branch=master)](https://travis-ci.org/Clashsoft/Angular-Gradle-Demo)
+
 This is a demo project for the [Angular Gradle plugin](https://github.com/Clashsoft/Angular-Gradle).
 Follow the steps below to integrate an Angular frontend into your Gradle project with the plugin.
 
