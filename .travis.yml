@@ -1,0 +1,27 @@
+# --------------- General Settings ---------------
+
+language: java
+jdk:
+  - openjdk8
+  - openjdk11
+  - openjdk12
+
+node_js: "13.7.0"
+
+git:
+  depth: false
+
+before_install:
+  - npm install -g @angular/cli
+
+# --------------- Gradle Cache ---------------
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - angular/angular-gradle-demo/node_modules
